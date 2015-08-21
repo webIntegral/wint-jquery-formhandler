@@ -1,0 +1,6 @@
+# project files (zend studio)
+.settings
+.project
+
+# npm and bower
+node_modules/
