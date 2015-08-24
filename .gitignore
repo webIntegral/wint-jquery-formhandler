@@ -4,3 +4,4 @@
 
 # npm and bower
 node_modules/
+bower_components/

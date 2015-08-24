@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>text-input Test</title>
+		
+		<!-- @todo: Load fontawesome from bower components, not from cnd. Don't know why is not working.
+			Maybe because I'm not using a localhost but a regular file system. Try that. -->
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="text-input.css">
+		
+		<script type="text/javascript" src="../../bower_components/jquery/dist/jquery.min.js"></script>
+		<script type="text/javascript" src="../../bower_components/jquery-ui/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="text-input.js"></script>
+	</head>
+	<body>
+		<form>
+			<label><i class="fa fa-user"></i> Name:</label>
+			<input type="text" id="name">
+			<button type="button" id="getValue">Get Value</button>
+		</form>
+		
+		<p>Value is: <span id="result"></span></p>
+		
+		<script type="text/javascript">
+			$( document ).ready( function () {
+				
+				// Init textinput
+				$( '#name' ).textinput({
+					regexp: /^$|^[-0-9a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s\.\,\&\']+$/,
+					min_length: 3,
+					max_length: 10,
+				});
+				
+				// Bind click event to get/show value
+				$('#getValue').on( 'click', function() {
+					var $value = $( '#name' ).textinput('value');
+					$( '#result' ).text( $value );
+				})
+			} );
+		</script>
+		
+	</body>
+</html>

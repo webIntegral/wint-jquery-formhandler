@@ -1,0 +1,22 @@
+.hide {
+	display: none;
+}
+
+.show {
+	display: block;
+}
+
+/*
+ * #.# Help Block
+ */
+.wit-frm-help-block {
+	
+}
+
+.wint-frm-error {
+	color: red;
+}
+
+.wint-frm-success {
+	color: green;
+}
