@@ -1,0 +1,9 @@
+Form Widget
+	Initialize form inputs and selects as widgets and put theme inside a object for reference and handling
+	Bind buttons events (send and cancel)
+	Check if form (all required fields are valid)
+	Get fields values (names: value)
+	Send form.
+
+Button Widget
+	Make widget that launches Form Widget and all requerid controls

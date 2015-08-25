@@ -8,20 +8,23 @@
 			Maybe because I'm not using a localhost but a regular file system. Try that. -->
 		
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="text-input.css">
+		<link rel="stylesheet" href="textinput.css">
 		
 		<script type="text/javascript" src="../../bower_components/jquery/dist/jquery.min.js"></script>
 		<script type="text/javascript" src="../../bower_components/jquery-ui/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="text-input.js"></script>
+		<script type="text/javascript" src="../formcontrol/formcontrol.js"></script>
+		<script type="text/javascript" src="textinput.js"></script>
 	</head>
 	<body>
 		<form>
 			<label><i class="fa fa-user"></i> Name:</label>
 			<input type="text" id="name">
 			<button type="button" id="getValue">Get Value</button>
+			<button type="button" id="getValid">Is Valid?</button>
 		</form>
 		
 		<p>Value is: <span id="result"></span></p>
+		<p>Is Valid: <span id="resultValid"></span></p>
 		
 		<script type="text/javascript">
 			$( document ).ready( function () {
@@ -37,6 +40,12 @@
 				$('#getValue').on( 'click', function() {
 					var $value = $( '#name' ).textinput('value');
 					$( '#result' ).text( $value );
+				})
+				
+				// Bind click event to get/show isValid
+				$('#getValid').on( 'click', function() {
+					var $value = $( '#name' ).textinput('isValid');
+					$( '#resultValid' ).text( $value );
 				})
 			} );
 		</script>

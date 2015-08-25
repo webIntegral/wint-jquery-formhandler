@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Formcontrol Test</title>
+		
+		<!-- @todo: Load fontawesome from bower components, not from cnd. Don't know why is not working.
+			Maybe because I'm not using a localhost but a regular file system. Try that. -->
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="text-input.css">
+		
+		<script type="text/javascript" src="../../bower_components/jquery/dist/jquery.min.js"></script>
+		<script type="text/javascript" src="../../bower_components/jquery-ui/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="formcontrol.js"></script>
+		
+	</head>
+	<body>
+		<form>
+			<label><i class="fa fa-user"></i> Name:</label>
+			<input type="text" id="name">
+			<button type="button" id="getValue">Get Value</button>
+		</form>
+		
+		<p>Value is: <span id="result"></span></p>
+		
+		<script type="text/javascript">
+		
+			// Extend formcontrol widget
+			$.widget( 'wint.formcontroltest', $.wint.formcontrol, {
+				
+				_initialize: function() {
+					console.log('Running _initialize function.');
+				},
+				
+				_watchChanges: function() {
+					console.log( 'Running _watchChanges function' );
+					
+					var $this = this;
+					var $element = this.element;
+					
+					// Bind blur event
+					$element
+					.on( 'blur', function( e ) {
+						$element.off( 'propertychange keyup input paste' );
+						$this.validate();
+					});
+				},
+				
+				_validate: function( options ) {
+					console.log( 'Running _validate function' );
+					return true; //false
+				}
+				
+			});
+			
+			// Init formcontroltest
+			$( document ).ready( function () {
+				
+				// Init textinput
+				$( '#name' ).formcontroltest({
+					
+				});
+				
+				// Bind click event to get/show value
+				$('#getValue').on( 'click', function() {
+					var $value = $( '#name' ).formcontroltest('value');
+					$( '#result' ).text( $value );
+				})
+				
+			} );
+		</script>
+		
+	</body>
+</html>

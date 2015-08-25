@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>text-input Test</title>
+		
+		<!-- @todo: Load fontawesome from bower components, not from cnd. Don't know why is not working.
+			Maybe because I'm not using a localhost but a regular file system. Try that. -->
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="../assets/css/style.css">
+		
+		<script type="text/javascript" src="../../bower_components/jquery/dist/jquery.min.js"></script>
+		<script type="text/javascript" src="../../bower_components/jquery-ui/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="../formcontrol/formcontrol.js"></script>
+		<script type="text/javascript" src="dropdown.js"></script>
+	</head>
+	<body>
+		
+		<form>
+			<label>Option:</label>
+			<select id="options">
+				<option value="0">Select an option</option>
+				<option>Option 1</option>
+				<option>Option 2</option>
+				<option>Option 3</option>
+			</select>
+			<button type="button" id="getValue">Get Value</button>
+			<button type="button" id="getValid">Is Valid?</button>
+		</form>	
+		
+		<p>Value is: <span id="result"></span></p>
+		<p>Is Valid: <span id="resultValid"></span></p>
+		
+		<script type="text/javascript">
+		$( document ).ready( function () {
+			
+			// Init textinput
+			$( '#options' ).dropdown({
+				regexp: /^$|^[-0-9a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s\.\,\&\']+$/,
+				min_length: 3,
+				max_length: 10,
+			});
+			
+			// Bind click event to get/show value
+			$('#getValue').on( 'click', function() {
+				var $value = $( '#options' ).dropdown('value');
+				$( '#result' ).text( $value );
+			})
+			
+			// Bind click event to get/show isValid
+			$('#getValid').on( 'click', function() {
+				var $value = $( '#options' ).dropdown('isValid');
+				$( '#resultValid' ).text( $value );
+			})
+		} );
+		</script>
+		
+	</body>
+</html>

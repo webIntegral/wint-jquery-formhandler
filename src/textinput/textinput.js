@@ -19,20 +19,10 @@
  * @todo: Make it AMD 
  */
 
-$.widget( 'wit.textinput', {
+$.widget( 'wint.textinput', $.wint.formcontrol, {
 	
 	// Default options
 	options: {
-		
-		/**
-		 * jquery object (dom element) that holds validation messages
-		 */
-		help_block: null,
-		
-		/**
-		 * Template to create help block (when not set)
-		 */
-		help_block_tpl: '<div></div>',
 		
 		/**
 		 * Regular expression to validate text input content
@@ -52,9 +42,8 @@ $.widget( 'wit.textinput', {
 		/**
 		 * Focus in Error/Valid classes and error messages
 		 */
-		focus_in_error_class: 'wint-frm-error',
-		focus_in_valid_class: 'wint-frm-success',
 		focus_in_msgs: {
+			error: '<i class="fa fa-bomb"></i> There\'s an error here. Please check!',
 			regexp: '<i class="fa fa-bomb"></i> Ups! It seems you\'re putting some weird characters here!',
 			min_length: '<i class="fa fa-trophy"></i> You\'re almost there! Type a little bit more',
 			max_length: '<i class="fa fa-hand-scissors-o"></i> Wow! That\'s kind of too much. Shorten that a little!',
@@ -64,9 +53,8 @@ $.widget( 'wit.textinput', {
 		/**
 		 * Focus out Error/Valid classes and error messages
 		 */
-		focus_out_error_class: 'wint-frm-error',
-		focus_out_valid_class: 'wint-frm-success',
 		focus_out_msgs: {
+			error: '<i class="fa fa-bomb"></i> There\'s an error here. Please check!',
 			regexp: '<i class="fa fa-umbrella"></i> Don\'t leave us hanging! There are some weird characters here!',
 			min_length: '<i class="fa fa-hand-lizard-o"></i> Say something, man! Type a little bit more',
 			max_length: '<i class="fa fa-hand-rock-o"></i> That\'s a lot! Try using a little of delete key',
@@ -75,55 +63,15 @@ $.widget( 'wit.textinput', {
 	},
 	
 	/**
-	 * Constructor
+	 * _initialize
 	 */
-	_create: function() {
-		
-		// Add custom class
-		this.element.addClass( 'wint-frm-text-input' );
-		
-		// Init help block
-		this._initHelpBlock();
-		
-		// Watch changes and setups validations
-		this._watchChanges();
-		
+	_initialize: function() {
 		// If input is not empty, validate
 		// in case there is something wrong
 		if ( this.element.val() != '' ) {
-			this.focusOutValidate();
+			this.validate();
 		}
-		
-	}, //_create
-	
-	/**
-	 * _initHelpBlock
-	 * 
-	 * Check if help block is defined. If not, creates one
-	 * Set appropiated class for custom block
-	 * 
-	 */
-	_initHelpBlock: function() {
-		
-		var $element = this.element
-		var $help_block = this.options.help_block;
-		var $help_block_tpl = this.options.help_block_tpl;
-		
-		// Check if help block is not defined or is not a instance of jquery
-		if ( null == $help_block || 
-				undefined == $help_block || 
-				! ( $help_block instanceof jQuery ) ) {
-			
-			// Create help block
-			this.options.help_block = $( $help_block_tpl );
-			$help_block = this.options.help_block;
-			$element.after( $help_block );
-		}
-		
-		// Set class
-		$help_block.addClass( 'wit-frm-help-block' );
-		$help_block.addClass( 'hide' );
-	}, //_initHelpBlock
+	},
 	
 	/**
 	 * _watchChanges
@@ -143,58 +91,15 @@ $.widget( 'wit.textinput', {
 				$element
 				.on( 'propertychange keyup input paste', function() {
                     if ( $element.data( 'oldVal' ) != $element.val() ) {
-                    	$this.focusInValidate();
+                    	$this._focusInValidate();
                     }
 				});
 			})
 			.on( 'blur', function( e ) {
 				$element.off( 'propertychange keyup input paste' );
-				$this.focusOutValidate();
+				$this.validate();
 			});
 	}, //_watchChanges
-	
-	/**
-	 * focusInValidate
-	 * 
-	 * Validation method for on focus in
-	 * To encourage user to keep typing
-	 * 
-	 */
-	focusInValidate: function() {
-		
-		var $error_class = this.options.focus_in_error_class;
-		var $valid_class = this.options.focus_in_valid_class;
-		var $msgs = this.options.focus_in_msgs;
-		
-		// Call validation
-		this.validate({
-			error_class: $error_class,
-			valid_class: $valid_class,
-			msgs: $msgs
-			
-		});
-	}, //focusInValidate
-	
-	/**
-	 * focusOutValidate
-	 * 
-	 * Validation method on focus out
-	 * To encourage user to comeback and continue
-	 * 
-	 */
-	focusOutValidate: function() {
-		
-		var $error_class = this.options.focus_out_error_class;
-		var $valid_class = this.options.focus_out_valid_class;
-		var $msgs = this.options.focus_out_msgs;
-		
-		// Call validation
-		this.validate({
-			error_class: $error_class,
-			valid_class: $valid_class,
-			msgs: $msgs
-		});
-	}, //focusOutValidate
 	
 	/**
 	 * validate
@@ -210,11 +115,12 @@ $.widget( 'wit.textinput', {
 	 * }
 	 * 
 	 */
-	validate: function( options ) {
+	_validate: function( options ) {
 		
 		var $error_class = options.error_class;
 		var $valid_class = options.valid_class;
 		var $msgs 		 = options.msgs;
+		var $valid		 = false;
 		
 		//  Variables to call setHelpBlock
 		var $msg = '';
@@ -225,6 +131,7 @@ $.widget( 'wit.textinput', {
 				if ( this.validateMaxLength() ) {
 					$msg = $msgs.valid;
 					$class = $valid_class;
+					$valid = true;
 				} else {
 					$msg = $msgs.max_length;
 				}
@@ -243,47 +150,8 @@ $.widget( 'wit.textinput', {
 			type: $class
 		});
 		
-	}, //validate
-	
-	/**
-	 * setHelpBlock
-	 * 
-	 * Sets message and class for help block
-	 * To display proper user feedback
-	 * 
-	 */
-	setHelpBlock: function( options ) {
-		
-		var $help_block = this.options.help_block;
-		
-		var $msg = options.msg;
-		var $class = options.type;
-		
-		// Reset help block class
-		this._resetHelpBlockClass();
-		
-		// Is message is not empty
-		if ( $msg != '' && $msg != null ) {
-			$help_block.html( $msg );
-			$help_block.addClass( $class );
-			$help_block.removeClass( 'hide' );
-		}
-	}, //setHelpBlock
-	
-	/**
-	 * _resetHelpBlockClass
-	 * 
-	 * Resets help block class (style)
-	 */
-	_resetHelpBlockClass: function() {
-		
-		var $help_block = this.options.help_block;
-		var $error_class = this.options.focus_in_error_class;
-		var $valid_class = this.options.focus_in_valid_class;
-		
-		$help_block.removeClass($error_class);
-		$help_block.removeClass($valid_class);
-	}, //_resetHelpBlockClass
+		return $valid;
+	}, //_validate
 	
 	/**
 	 * validateRegex
@@ -361,15 +229,5 @@ $.widget( 'wit.textinput', {
 		
 		return $valid;
 	}, //validateMaxLength
-	
-	/**
-	 * value
-	 * 
-	 * Returns text input value, valid or not
-	 * 
-	 */
-	value: function() {
-		return this.element.val();
-	}
 
 }); //widget
